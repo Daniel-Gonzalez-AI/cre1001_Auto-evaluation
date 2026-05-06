@@ -202,13 +202,23 @@
     left: 50%;
     transform: translateX(-50%);
     width: min(980px, calc(100% - 1.5rem));
-    background: color-mix(in oklab, var(--card) 94%, transparent);
+    background: color-mix(in oklab, var(--card) 78%, transparent);
     border: 1px solid var(--border);
     border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.12);
-    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.10);
+    backdrop-filter: blur(12px) saturate(115%);
+    -webkit-backdrop-filter: blur(12px) saturate(115%);
     z-index: 50;
     padding: .6rem .75rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-8px);
+    transition: opacity .25s ease, transform .25s ease, background .25s ease;
+  }
+  .floating-progress.visible {
+    opacity: .86;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
   }
   .floating-progress .row {
     display: flex;
@@ -1141,8 +1151,14 @@
     if (floatBar) floatBar.style.width = pct + '%';
     const floatAnswered = document.getElementById('float-answered');
     const floatUnanswered = document.getElementById('float-unanswered');
+    const floatingProgress = document.querySelector('.floating-progress');
     if (floatAnswered) floatAnswered.textContent = String(answered);
     if (floatUnanswered) floatUnanswered.textContent = String(TOTAL_QUESTIONS - answered);
+    if (floatingProgress) {
+      // Show only during active progress (1..39), hide at start and completion.
+      const shouldShow = answered > 0 && answered < TOTAL_QUESTIONS;
+      floatingProgress.classList.toggle('visible', shouldShow);
+    }
 
     // Section totals
     const s1El = document.getElementById('total-s1');
