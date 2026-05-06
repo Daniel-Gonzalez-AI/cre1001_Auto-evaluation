@@ -1,0 +1,10 @@
+{
+  "name": "cre1001-auto-evaluation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Auto-evaluation de ma Confiance creative - CRE 1001",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'Static site - no build required'"
+  }
+}
