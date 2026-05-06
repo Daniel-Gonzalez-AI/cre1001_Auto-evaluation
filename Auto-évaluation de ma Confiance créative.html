@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Auto-évaluation de ma Confiance créative — CRE 1001</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary: #1a365d;
@@ -78,7 +81,7 @@
   .page-header { position: relative; }
   * { box-sizing: border-box; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     margin: 0;
@@ -86,6 +89,7 @@
     line-height: 1.6;
   }
   .container { max-width: 1000px; margin: 0 auto; padding: 0 1rem 2rem; }
+  .page-shell { padding-top: 5rem; }
 
   /* Header */
   .page-header {
@@ -168,6 +172,30 @@
   .progress-label { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); margin-bottom: .25rem; }
   .progress-track { height: 8px; background: var(--progress-bg); border-radius: 4px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 4px; transition: width .3s ease; }
+  .floating-progress {
+    position: fixed;
+    top: .75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(980px, calc(100% - 1.5rem));
+    background: color-mix(in oklab, var(--card) 94%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    backdrop-filter: blur(8px);
+    z-index: 50;
+    padding: .6rem .75rem;
+  }
+  .floating-progress .row {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .35rem;
+    font-size: .86rem;
+    color: var(--muted);
+  }
+  .floating-progress .stats strong { color: var(--text); }
 
   /* Table */
   .table-wrap {
@@ -206,6 +234,7 @@
   tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--hover-bg); }
+  tbody tr:nth-child(even):not(.reverse-row) { background: color-mix(in oklab, var(--bg) 70%, var(--card)); }
 
   .reverse-row { background: var(--highlight) !important; }
   .reverse-row:hover { background: #fff3d9 !important; }
@@ -329,7 +358,60 @@
   /* Incomplete row highlight on scroll */
   .unanswered td:first-child { border-left: 3px solid var(--danger); padding-left: calc(2.2rem - 3px) !important; }
 
+  /* Study tabs */
+  .study-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 1.25rem;
+    padding: 1rem;
+  }
+  .study-panel h3 { margin: 0 0 .7rem; color: var(--primary); font-size: 1rem; }
+  .study-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: .75rem;
+  }
+  .study-tab {
+    border: 1px solid var(--border);
+    background: var(--totals-bg);
+    color: var(--text);
+    padding: .45rem .7rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: .86rem;
+  }
+  .study-tab.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .study-content {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .85rem;
+    font-size: .92rem;
+    line-height: 1.6;
+    background: var(--card);
+  }
+  .study-content p { margin: .45rem 0; }
+  .study-content a { color: var(--accent); text-decoration: underline; }
+
+  .result-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    display: none;
+  }
+  .result-panel h3 { margin: 0 0 .6rem; color: var(--primary); }
+  .result-panel p { margin: .5rem 0; font-size: .93rem; line-height: 1.6; }
+  .result-level { font-weight: 700; color: var(--accent); }
+
   @media (max-width: 640px) {
+    .page-shell { padding-top: 6rem; }
     .page-header h1 { font-size: 1.4rem; }
     thead th:nth-child(2), thead th:nth-child(3), thead th:nth-child(4),
     thead th:nth-child(5), thead th:nth-child(6) { font-size: .65rem; width: 48px; }
@@ -349,7 +431,15 @@
 </style>
 </head>
 <body>
-<div class="container">
+  <div class="container">
+  <div class="floating-progress" aria-live="polite">
+    <div class="row">
+      <div class="stats">Répondu : <strong id="float-answered">0</strong>/40 · Manquantes : <strong id="float-unanswered">40</strong></div>
+      <button id="btnNextUnanswered" class="btn btn-secondary" type="button">Prochaine non répondue</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-bar-float"></div></div>
+  </div>
+  <div class="page-shell">
 
   <!-- Header -->
   <header class="page-header">
@@ -391,8 +481,8 @@
   <div class="student-info">
     <label for="student-name">Nom / Prénom :</label>
     <input type="text" id="student-name" placeholder="Entrez votre nom et prénom…">
-    <label for="student-date">Date :</label>
-    <input type="date" id="student-date">
+    <label>Date :</label>
+    <input type="text" id="current-date" readonly aria-label="Date automatique du jour">
   </div>
 
   <!-- Legend -->
@@ -836,6 +926,22 @@
   <div class="saved-msg" id="savedMsg">Les réponses ont été enregistrées dans le navigateur.</div>
   <div class="auto-msg" id="autoMsg">Cochez une case pour voir le score se mettre à jour automatiquement.</div>
 
+  <section class="result-panel" id="resultPanel" aria-live="polite">
+    <h3>Interprétation finale des résultats</h3>
+    <p id="result-level" class="result-level">Niveau :</p>
+    <p id="result-text">Soumettez le questionnaire complété pour afficher l'interprétation.</p>
+  </section>
+
+  <section class="study-panel" aria-label="Sources scientifiques">
+    <h3>Sources scientifiques et résumé formaté</h3>
+    <div class="study-tabs" role="tablist">
+      <button class="study-tab active" role="tab" id="tab-isaksen" aria-selected="true" aria-controls="study-content" data-study="isaksen">Isaksen & Geuens (2007)</button>
+      <button class="study-tab" role="tab" id="tab-kelley" aria-selected="false" aria-controls="study-content" data-study="kelley">Kelley & Kelley (2013)</button>
+      <button class="study-tab" role="tab" id="tab-torrance" aria-selected="false" aria-controls="study-content" data-study="torrance">Torrance (1966)</button>
+    </div>
+    <div id="study-content" class="study-content" role="tabpanel" aria-labelledby="tab-isaksen"></div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <strong>CRE 1001 — Développement de la créativité</strong><br>
@@ -845,11 +951,32 @@
   </footer>
 
 </div>
+</div>
 
 <script>
 (() => {
   const reverseRows = { s1: [3, 6, 11, 17], s2: [3, 6, 11, 17] };
   const TOTAL_QUESTIONS = 40;
+  const studySummaries = {
+    isaksen: `
+      <p><strong>Idée principale :</strong> le style de résolution de problème influence la manière d'aborder un processus de créativité appliquée.</p>
+      <p><strong>Lecture utile pour ce formulaire :</strong> un score élevé reflète souvent une meilleure aisance à explorer, structurer et décider dans l'incertitude.</p>
+      <p><strong>Référence :</strong> Isaksen, S. G., &amp; Geuens, D. (2007), <em>An exploratory study of the relationships between an assessment of problem-solving style and creative problem-solving</em>.</p>
+      <p><a href="https://psycnet.apa.org/record/2007-06595-001" target="_blank" rel="noopener noreferrer">Voir la source</a></p>
+    `,
+    kelley: `
+      <p><strong>Idée principale :</strong> la confiance créative est une compétence qui se développe par l'action, le prototypage et la tolérance à l'erreur.</p>
+      <p><strong>Lecture utile pour ce formulaire :</strong> les zones “modérée” et “potentiel de développement” indiquent surtout des leviers d'entraînement, pas une limite fixe.</p>
+      <p><strong>Référence :</strong> Kelley, T., &amp; Kelley, D. (2013), <em>Creative Confidence: Unleashing the Creative Potential Within Us All</em>.</p>
+      <p><a href="https://www.penguinrandomhouse.com/books/226533/creative-confidence-by-tom-kelley-and-david-kelley/" target="_blank" rel="noopener noreferrer">Voir la source</a></p>
+    `,
+    torrance: `
+      <p><strong>Idée principale :</strong> la créativité peut être observée avec des dimensions mesurables (originalité, fluidité, élaboration, flexibilité).</p>
+      <p><strong>Lecture utile pour ce formulaire :</strong> ce questionnaire évalue surtout la confiance à mobiliser ces ressources, pas uniquement la performance brute.</p>
+      <p><strong>Référence :</strong> Torrance, E. P. (1966), <em>Torrance tests of creative thinking</em>.</p>
+      <p><a href="https://search.worldcat.org/title/714040431" target="_blank" rel="noopener noreferrer">Voir la source</a></p>
+    `
+  };
 
   // --- Calculs ---
   function scoreSection(prefix, rows) {
@@ -866,6 +993,37 @@
     return { sum: sum, answered: answered };
   }
 
+  function getInterpretationFromSectionScore(score) {
+    if (score >= 80) {
+      return {
+        level: "Confiance créative élevée",
+        text: "Vous avez une forte assurance dans votre capacité à innover et à prendre des initiatives. Un score élevé indique un bon niveau de compétences en créativité appliquée et des traits de personnalité qui vous prédisposent à résoudre des problèmes de façon créative."
+      };
+    }
+    if (score >= 50) {
+      return {
+        level: "Confiance créative modérée",
+        text: "Vous avez du potentiel créatif. Certains freins (peur de l'échec, hésitation à agir) peuvent limiter votre expression. Vous pourriez aisément amplifier cette compétence et voir vos opportunités de développement dans certaines dimensions."
+      };
+    }
+    return {
+      level: "Potentiel de développement",
+      text: "Vous ressentez parfois des doutes sur votre capacité à être créatif ou à concrétiser vos idées. Travailler sur l'expérimentation et la résilience peut vous aider. Il y a probablement des croyances ou des peurs qui freinent votre confiance."
+    };
+  }
+
+  function renderFinalInterpretation(s1, s2) {
+    const resultPanel = document.getElementById('resultPanel');
+    const levelEl = document.getElementById('result-level');
+    const textEl = document.getElementById('result-text');
+    const averageSectionScore = Math.round((s1 + s2) / 2);
+    const interpretation = getInterpretationFromSectionScore(averageSectionScore);
+    levelEl.textContent = `Niveau : ${interpretation.level} (${averageSectionScore}/100)`;
+    textEl.textContent = interpretation.text;
+    resultPanel.style.display = 'block';
+    resultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function updateTotals() {
     const s1 = scoreSection('s1', 20);
     const s2 = scoreSection('s2', 20);
@@ -875,6 +1033,12 @@
     const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
     document.getElementById('progress-bar').style.width = pct + '%';
     document.getElementById('progress-pct').textContent = pct + ' %';
+    const floatBar = document.getElementById('progress-bar-float');
+    if (floatBar) floatBar.style.width = pct + '%';
+    const floatAnswered = document.getElementById('float-answered');
+    const floatUnanswered = document.getElementById('float-unanswered');
+    if (floatAnswered) floatAnswered.textContent = String(answered);
+    if (floatUnanswered) floatUnanswered.textContent = String(TOTAL_QUESTIONS - answered);
 
     // Section totals
     const s1El = document.getElementById('total-s1');
@@ -901,7 +1065,7 @@
       }
     });
     const name = document.getElementById('student-name')?.value || '';
-    const date = document.getElementById('student-date')?.value || '';
+    const date = new Date().toISOString().split('T')[0];
     data._meta = { name, date, saved: new Date().toISOString() };
     localStorage.setItem('cre1001_confiance_creative', JSON.stringify(data));
   }
@@ -918,7 +1082,7 @@
       }
       if (data._meta) {
         if (data._meta.name) document.getElementById('student-name').value = data._meta.name;
-        if (data._meta.date) document.getElementById('student-date').value = data._meta.date;
+        if (data._meta.date) document.getElementById('current-date').value = data._meta.date;
       }
       updateTotals();
     } catch (_) {}
@@ -926,7 +1090,14 @@
 
   // --- Buttons ---
   document.getElementById('btnSave').addEventListener('click', () => {
+    const s1 = scoreSection('s1', 20);
+    const s2 = scoreSection('s2', 20);
+    if (s1.answered !== 20 || s2.answered !== 20) {
+      alert('Complétez les 40 réponses avant de soumettre pour obtenir l’interprétation finale.');
+      return;
+    }
     saveData();
+    renderFinalInterpretation(s1.sum, s2.sum);
     const msg = document.getElementById('savedMsg');
     msg.style.display = 'block';
     setTimeout(() => msg.style.display = 'none', 3500);
@@ -942,10 +1113,28 @@
       }
     });
     document.getElementById('student-name').value = '';
-    document.getElementById('student-date').value = '';
+    document.getElementById('current-date').value = new Date().toISOString().split('T')[0];
     localStorage.removeItem('cre1001_confiance_creative');
+    document.getElementById('resultPanel').style.display = 'none';
     updateTotals();
   });
+
+  const btnNextUnanswered = document.getElementById('btnNextUnanswered');
+  if (btnNextUnanswered) {
+    btnNextUnanswered.addEventListener('click', () => {
+      for (const section of ['s1', 's2']) {
+        for (let i = 1; i <= 20; i++) {
+          const radios = Array.from(document.getElementsByName(`${section}_${i}`));
+          const answered = radios.some(rb => rb.checked);
+          if (!answered && radios[0]) {
+            radios[0].closest('tr')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            radios[0].focus();
+            return;
+          }
+        }
+      }
+    });
+  }
 
   // --- Wiring ---
   ['s1', 's2'].forEach(p => {
@@ -955,7 +1144,23 @@
     }
   });
   document.getElementById('student-name').addEventListener('input', saveData);
-  document.getElementById('student-date').addEventListener('change', saveData);
+
+  // --- Study tabs ---
+  const studyContent = document.getElementById('study-content');
+  const studyTabs = Array.from(document.querySelectorAll('.study-tab'));
+  function setStudyTab(key) {
+    studyTabs.forEach(tab => {
+      const active = tab.dataset.study === key;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-selected', String(active));
+      if (active) {
+        studyContent.setAttribute('aria-labelledby', tab.id);
+      }
+    });
+    studyContent.innerHTML = studySummaries[key] || '';
+  }
+  studyTabs.forEach(tab => tab.addEventListener('click', () => setStudyTab(tab.dataset.study)));
+  setStudyTab('isaksen');
 
   // --- Theme toggle ---
   const themeToggle = document.getElementById('themeToggle');
@@ -975,7 +1180,7 @@
   if (savedTheme) setTheme(savedTheme);
 
   // Set today as default date if empty
-  const dateInput = document.getElementById('student-date');
+  const dateInput = document.getElementById('current-date');
   if (!dateInput.value) {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
