@@ -203,6 +203,41 @@
   .global-card .val { font-size: 2rem; font-weight: 700; }
   .global-card .max { opacity: .7; font-size: 1.1rem; margin-left: .25rem; }
 
+  .interpretation {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+  }
+  .interpretation h3 {
+    margin: 0 0 .75rem;
+    color: var(--primary);
+    font-size: 1.05rem;
+  }
+  .interpretation .ranges {
+    color: var(--muted);
+    font-size: .9rem;
+    margin-bottom: .75rem;
+  }
+  .interpretation .result {
+    margin: .6rem 0;
+    padding: .65rem .75rem;
+    border-left: 3px solid var(--accent);
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: .92rem;
+  }
+  .interpretation .result strong {
+    color: var(--primary);
+  }
+  .interpretation .sources {
+    margin-top: .85rem;
+    color: var(--muted);
+    font-size: .82rem;
+    line-height: 1.5;
+  }
+
   /* Buttons */
   .btn-bar { display: flex; gap: .75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
   .btn {
@@ -762,6 +797,20 @@
     </div>
   </div>
 
+  <section class="interpretation">
+    <h3>Interprétation du score (par section, sur 100 points)</h3>
+    <div class="ranges">80-100 : Confiance créative élevée · 50-79 : Confiance créative modérée · Moins de 50 : Potentiel de développement</div>
+    <div class="result" id="interp-s1">Section 1 : complétez toutes les réponses pour afficher l'interprétation.</div>
+    <div class="result" id="interp-s2">Section 2 : complétez toutes les réponses pour afficher l'interprétation.</div>
+    <div class="sources">
+      <strong>AUTO-ÉVALUATION de votre CONFIANCE CRÉATIVE</strong><br>
+      Auto-évaluation conçue à partir d'une synthèse et d'une adaptation des sources suivantes :
+      Isaksen, S. G., &amp; Geuens, D. (2007). An exploratory study of the relationships between an assessment of problem-solving style and creative problem-solving;
+      Kelley, T., &amp; Kelley, D. (2013). Creative Confidence: Unleashing the Creative Potential Within Us All;
+      Torrance, E. P. (1966). Torrance tests of creative thinking.
+    </div>
+  </section>
+
   <!-- Buttons -->
   <div class="btn-bar">
     <button id="btnSave" class="btn btn-primary">💾 Enregistrer les réponses</button>
@@ -823,6 +872,29 @@
     } else {
       glEl.textContent = '–';
     }
+
+    updateInterpretations(s1, s2);
+  }
+
+  function interpretationText(score) {
+    if (score >= 80) {
+      return "Confiance créative élevée — Vous avez une forte assurance dans votre capacité à innover et à prendre des initiatives.";
+    }
+    if (score >= 50) {
+      return "Confiance créative modérée — Vous avez du potentiel créatif; certains freins peuvent limiter son expression.";
+    }
+    return "Potentiel de développement — Vous ressentez parfois des doutes; l'expérimentation et la résilience peuvent renforcer votre confiance.";
+  }
+
+  function updateInterpretations(s1, s2) {
+    const el1 = document.getElementById('interp-s1');
+    const el2 = document.getElementById('interp-s2');
+    el1.innerHTML = s1.answered === 20
+      ? `<strong>Section 1 (${s1.sum}/100)</strong> — ${interpretationText(s1.sum)}`
+      : "Section 1 : complétez toutes les réponses pour afficher l'interprétation.";
+    el2.innerHTML = s2.answered === 20
+      ? `<strong>Section 2 (${s2.sum}/100)</strong> — ${interpretationText(s2.sum)}`
+      : "Section 2 : complétez toutes les réponses pour afficher l'interprétation.";
   }
 
   // --- Auto-save ---
