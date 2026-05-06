@@ -18,7 +18,64 @@
     --highlight: #fffaf0;
     --highlight-border: #ed8936;
     --danger: #e53e3e;
+    --header-text: #fff;
+    --thead-bg: #f8fafc;
+    --hover-bg: #f8fafc;
+    --progress-bg: #edf2f7;
+    --totals-bg: #f8fafc;
+    --radio-accent: var(--accent);
   }
+
+  /* Dark mode */
+  [data-theme="dark"] {
+    --primary: #0f172a;
+    --accent: #63b3ed;
+    --accent-hover: #4299e1;
+    --success: #48bb78;
+    --bg: #0f172a;
+    --card: #1e293b;
+    --border: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --highlight: #331e0b;
+    --highlight-border: #ed8936;
+    --danger: #ef4444;
+    --header-text: #fff;
+    --thead-bg: #1e293b;
+    --hover-bg: #334155;
+    --progress-bg: #1e293b;
+    --totals-bg: #1e293b;
+    --radio-accent: #63b3ed;
+  }
+  body {
+    transition: background .3s ease, color .3s ease;
+  }
+
+  .theme-toggle {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    cursor: pointer;
+    font-size: 1.4rem;
+    padding: .25rem .5rem;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: background .2s, border-color .2s, transform .1s;
+    user-select: none;
+    line-height: 1;
+    z-index: 10;
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.5); transform: scale(1.05); }
+  .theme-toggle:active { transform: scale(0.95); }
+  [data-theme="dark"] .theme-toggle {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-color: rgba(255,255,255,0.25);
+  }
+  [data-theme="dark"] .theme-toggle:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.4); }
+  .page-header { position: relative; }
   * { box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -33,7 +90,7 @@
   /* Header */
   .page-header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    color: #fff;
+    color: var(--header-text);
     padding: 2.5rem 1.5rem;
     margin-bottom: 2rem;
     border-radius: 0 0 12px 12px;
@@ -42,13 +99,14 @@
   .page-header .badge {
     display: inline-block;
     background: rgba(255,255,255,0.2);
-    color: #fff;
+    color: inherit;
     padding: .25rem .75rem;
     border-radius: 20px;
     font-size: .8rem;
     font-weight: 600;
     letter-spacing: .05em;
     margin-bottom: .75rem;
+    border: 1px solid rgba(255,255,255,0.25);
   }
   .page-header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
   .page-header .subtitle { margin: .5rem 0 0; opacity: .9; font-size: 1.05rem; }
@@ -108,7 +166,7 @@
     margin-bottom: 1.5rem;
   }
   .progress-label { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); margin-bottom: .25rem; }
-  .progress-track { height: 8px; background: #edf2f7; border-radius: 4px; overflow: hidden; }
+  .progress-track { height: 8px; background: var(--progress-bg); border-radius: 4px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 4px; transition: width .3s ease; }
 
   /* Table */
@@ -123,12 +181,13 @@
   th, td { padding: .55rem .4rem; text-align: left; vertical-align: middle; }
   thead th {
     font-weight: 600;
-    background: #f8fafc;
+    background: var(--thead-bg);
     color: var(--text);
     position: sticky;
     top: 0;
     z-index: 2;
     border-bottom: 2px solid var(--border);
+    transition: background .3s, color .3s;
     white-space: nowrap;
   }
   thead th:first-child { min-width: 300px; padding-left: 1rem; }
@@ -146,7 +205,7 @@
   tbody td:nth-child(5), tbody td:nth-child(6) { text-align: center; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #f8fafc; }
+  tbody tr:hover { background: var(--hover-bg); }
 
   .reverse-row { background: var(--highlight) !important; }
   .reverse-row:hover { background: #fff3d9 !important; }
@@ -168,7 +227,8 @@
   input[type="radio"] {
     transform: scale(1.25);
     cursor: pointer;
-    accent-color: var(--accent);
+    accent-color: var(--radio-accent);
+    transition: accent-color .3s;
   }
 
   /* Totals */
@@ -180,9 +240,10 @@
     align-items: center;
     margin-top: .75rem;
     padding: .75rem 1rem;
-    background: #f8fafc;
+    background: var(--totals-bg);
     border-top: 1px solid var(--border);
     font-weight: 600;
+    transition: background .3s;
   }
   .totals .lbl { color: var(--muted); font-size: .9rem; }
   .totals .val { font-size: 1.4rem; color: var(--accent); font-weight: 700; margin-left: .3rem; }
@@ -190,7 +251,7 @@
   /* Global total */
   .global-card {
     background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: #fff;
+    color: var(--header-text);
     border-radius: 10px;
     padding: 1.25rem 1.5rem;
     display: flex;
@@ -198,6 +259,7 @@
     align-items: center;
     margin-top: 1.5rem;
     box-shadow: 0 4px 12px rgba(26,54,93,0.15);
+    transition: color .3s;
   }
   .global-card .lbl { font-size: .9rem; opacity: .85; }
   .global-card .val { font-size: 2rem; font-weight: 700; }
@@ -276,13 +338,13 @@
   }
   @media print {
     body { background: #fff; padding: 0; }
-    .page-header { border-radius: 0; padding: 1rem; box-shadow: none; }
+    .page-header { border-radius: 0; padding: 1rem; box-shadow: none; color: var(--text); }
     .legend { display: none; }
     .progress-wrap, .btn-bar, .saved-msg, .auto-msg, .student-info { display: none !important; }
-    .table-wrap { box-shadow: none; border: 1px solid #ccc; }
+    .table-wrap { box-shadow: none; border: 1px solid var(--border); }
     input[type="radio"] { transform: scale(1); }
-    .global-card { background: #fff; color: var(--text); border: 2px solid var(--primary); }
-    .footer { border-top: 1px solid #ccc; }
+    .global-card { background: var(--card); color: var(--text); border: 2px solid var(--primary); }
+    .footer { border-top: 1px solid var(--border); color: var(--text); }
   }
 </style>
 </head>
@@ -292,6 +354,9 @@
   <!-- Header -->
   <header class="page-header">
     <div class="badge">CRE 1001 — Séance 1</div>
+    <div class="theme-toggle" id="themeToggle" title="Mode clair / Mode sombre">
+      <span class="theme-icon" id="themeIcon">🌙</span>
+    </div>
     <h1>Auto-évaluation de ma Confiance créative</h1>
     <p class="subtitle">Évaluez votre niveau de confiance créative en cochant la case correspondant à votre niveau d'accord pour chaque énoncé.</p>
   </header>
@@ -775,7 +840,8 @@
   <footer class="footer">
     <strong>CRE 1001 — Développement de la créativité</strong><br>
     Séance 1 · Auto-évaluation de la confiance créative<br>
-    <span style="font-size:.75rem;opacity:.7">Cochez une case par ligne. Les énoncés marqués ↻ sont inversés.</span>
+    <span style="font-size:.75rem;opacity:.7">Cochez une case par ligne. Les énoncés marqués ↻ sont inversés.</span><br>
+    <span style="font-size:.7rem;opacity:.5;margin-top:.35rem;display:block;font-style:italic;">Adaptation faite par Daniel Gonzalez, Cert. en IA, UdeM — 05 mai 2026</span>
   </footer>
 
 </div>
@@ -890,6 +956,23 @@
   });
   document.getElementById('student-name').addEventListener('input', saveData);
   document.getElementById('student-date').addEventListener('change', saveData);
+
+  // --- Theme toggle ---
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  function setTheme(mode) {
+    document.documentElement.setAttribute('data-theme', mode);
+    themeIcon.textContent = mode === 'dark' ? '☀️' : '🌙';
+    themeToggle.title = mode === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre';
+    localStorage.setItem('cre1001_theme', mode);
+  }
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    setTheme(current === 'light' ? 'dark' : 'light');
+  });
+  // Restore theme on load
+  const savedTheme = localStorage.getItem('cre1001_theme');
+  if (savedTheme) setTheme(savedTheme);
 
   // Set today as default date if empty
   const dateInput = document.getElementById('student-date');
