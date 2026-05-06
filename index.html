@@ -9,23 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --primary: #2d4563;
-    --accent: #4f6f9a;
-    --accent-hover: #3f5d86;
-    --success: #4f9f7a;
-    --bg: #f3f1ea;
-    --card: #fbfaf6;
-    --border: #ddd8cc;
-    --text: #2f3e4e;
-    --muted: #6f7984;
-    --highlight: #fdf5e7;
+    --primary: #33445b;
+    --accent: #5c7599;
+    --accent-hover: #4f6788;
+    --success: #5a9f82;
+    --bg: #eeece4;
+    --card: #f7f4ec;
+    --border: #d3cdbf;
+    --text: #344153;
+    --muted: #6e7783;
+    --highlight: #f6eddc;
     --highlight-border: #ed8936;
     --danger: #d94c4c;
     --header-text: #fff;
-    --thead-bg: #f3efe6;
-    --hover-bg: #f5f2ea;
-    --progress-bg: #ebe6db;
-    --totals-bg: #f4f0e8;
+    --thead-bg: #ece6da;
+    --hover-bg: #eee8dc;
+    --progress-bg: #e2dccf;
+    --totals-bg: #ece6d9;
     --radio-accent: var(--accent);
     --fun-pink: #d946ef;
   }
@@ -1299,7 +1299,11 @@
   });
   // Restore theme on load
   const savedTheme = localStorage.getItem('cre1001_theme');
-  if (savedTheme) setTheme(savedTheme);
+  if (savedTheme) {
+    setTheme(savedTheme);
+  } else {
+    setTheme('dark');
+  }
 
   // Set today as default date if empty
   const dateInput = document.getElementById('current-date');
