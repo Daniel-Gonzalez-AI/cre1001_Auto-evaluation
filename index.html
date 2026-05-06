@@ -329,6 +329,46 @@
   /* Incomplete row highlight on scroll */
   .unanswered td:first-child { border-left: 3px solid var(--danger); padding-left: calc(2.2rem - 3px) !important; }
 
+  /* Study tabs */
+  .study-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 1.25rem;
+    padding: 1rem;
+  }
+  .study-panel h3 { margin: 0 0 .7rem; color: var(--primary); font-size: 1rem; }
+  .study-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: .75rem;
+  }
+  .study-tab {
+    border: 1px solid var(--border);
+    background: var(--totals-bg);
+    color: var(--text);
+    padding: .45rem .7rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: .86rem;
+  }
+  .study-tab.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .study-content {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .85rem;
+    font-size: .92rem;
+    line-height: 1.6;
+    background: var(--card);
+  }
+  .study-content p { margin: .45rem 0; }
+  .study-content a { color: var(--accent); text-decoration: underline; }
+
   @media (max-width: 640px) {
     .page-header h1 { font-size: 1.4rem; }
     thead th:nth-child(2), thead th:nth-child(3), thead th:nth-child(4),
@@ -391,8 +431,8 @@
   <div class="student-info">
     <label for="student-name">Nom / Prénom :</label>
     <input type="text" id="student-name" placeholder="Entrez votre nom et prénom…">
-    <label for="student-date">Date :</label>
-    <input type="date" id="student-date">
+    <label>Date :</label>
+    <input type="text" id="current-date" readonly aria-label="Date automatique du jour">
   </div>
 
   <!-- Legend -->
@@ -836,6 +876,16 @@
   <div class="saved-msg" id="savedMsg">Les réponses ont été enregistrées dans le navigateur.</div>
   <div class="auto-msg" id="autoMsg">Cochez une case pour voir le score se mettre à jour automatiquement.</div>
 
+  <section class="study-panel" aria-label="Sources scientifiques">
+    <h3>Sources scientifiques et résumé formaté</h3>
+    <div class="study-tabs" role="tablist">
+      <button class="study-tab active" role="tab" id="tab-isaksen" aria-selected="true" aria-controls="study-content" data-study="isaksen">Isaksen & Geuens (2007)</button>
+      <button class="study-tab" role="tab" id="tab-kelley" aria-selected="false" aria-controls="study-content" data-study="kelley">Kelley & Kelley (2013)</button>
+      <button class="study-tab" role="tab" id="tab-torrance" aria-selected="false" aria-controls="study-content" data-study="torrance">Torrance (1966)</button>
+    </div>
+    <div id="study-content" class="study-content" role="tabpanel" aria-labelledby="tab-isaksen"></div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <strong>CRE 1001 — Développement de la créativité</strong><br>
@@ -850,6 +900,26 @@
 (() => {
   const reverseRows = { s1: [3, 6, 11, 17], s2: [3, 6, 11, 17] };
   const TOTAL_QUESTIONS = 40;
+  const studySummaries = {
+    isaksen: `
+      <p><strong>Idée principale :</strong> le style de résolution de problème influence la manière d'aborder un processus de créativité appliquée.</p>
+      <p><strong>Lecture utile pour ce formulaire :</strong> un score élevé reflète souvent une meilleure aisance à explorer, structurer et décider dans l'incertitude.</p>
+      <p><strong>Référence :</strong> Isaksen, S. G., &amp; Geuens, D. (2007), <em>An exploratory study of the relationships between an assessment of problem-solving style and creative problem-solving</em>.</p>
+      <p><a href="https://psycnet.apa.org/record/2007-06595-001" target="_blank" rel="noopener noreferrer">Voir la source</a></p>
+    `,
+    kelley: `
+      <p><strong>Idée principale :</strong> la confiance créative est une compétence qui se développe par l'action, le prototypage et la tolérance à l'erreur.</p>
+      <p><strong>Lecture utile pour ce formulaire :</strong> les zones “modérée” et “potentiel de développement” indiquent surtout des leviers d'entraînement, pas une limite fixe.</p>
+      <p><strong>Référence :</strong> Kelley, T., &amp; Kelley, D. (2013), <em>Creative Confidence: Unleashing the Creative Potential Within Us All</em>.</p>
+      <p><a href="https://www.penguinrandomhouse.com/books/226533/creative-confidence-by-tom-kelley-and-david-kelley/" target="_blank" rel="noopener noreferrer">Voir la source</a></p>
+    `,
+    torrance: `
+      <p><strong>Idée principale :</strong> la créativité peut être observée avec des dimensions mesurables (originalité, fluidité, élaboration, flexibilité).</p>
+      <p><strong>Lecture utile pour ce formulaire :</strong> ce questionnaire évalue surtout la confiance à mobiliser ces ressources, pas uniquement la performance brute.</p>
+      <p><strong>Référence :</strong> Torrance, E. P. (1966), <em>Torrance tests of creative thinking</em>.</p>
+      <p><a href="https://search.worldcat.org/title/714040431" target="_blank" rel="noopener noreferrer">Voir la source</a></p>
+    `
+  };
 
   // --- Calculs ---
   function scoreSection(prefix, rows) {
@@ -901,7 +971,7 @@
       }
     });
     const name = document.getElementById('student-name')?.value || '';
-    const date = document.getElementById('student-date')?.value || '';
+    const date = new Date().toISOString().split('T')[0];
     data._meta = { name, date, saved: new Date().toISOString() };
     localStorage.setItem('cre1001_confiance_creative', JSON.stringify(data));
   }
@@ -918,7 +988,7 @@
       }
       if (data._meta) {
         if (data._meta.name) document.getElementById('student-name').value = data._meta.name;
-        if (data._meta.date) document.getElementById('student-date').value = data._meta.date;
+        if (data._meta.date) document.getElementById('current-date').value = data._meta.date;
       }
       updateTotals();
     } catch (_) {}
@@ -942,7 +1012,7 @@
       }
     });
     document.getElementById('student-name').value = '';
-    document.getElementById('student-date').value = '';
+    document.getElementById('current-date').value = new Date().toISOString().split('T')[0];
     localStorage.removeItem('cre1001_confiance_creative');
     updateTotals();
   });
@@ -955,7 +1025,23 @@
     }
   });
   document.getElementById('student-name').addEventListener('input', saveData);
-  document.getElementById('student-date').addEventListener('change', saveData);
+
+  // --- Study tabs ---
+  const studyContent = document.getElementById('study-content');
+  const studyTabs = Array.from(document.querySelectorAll('.study-tab'));
+  function setStudyTab(key) {
+    studyTabs.forEach(tab => {
+      const active = tab.dataset.study === key;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-selected', String(active));
+      if (active) {
+        studyContent.setAttribute('aria-labelledby', tab.id);
+      }
+    });
+    studyContent.innerHTML = studySummaries[key] || '';
+  }
+  studyTabs.forEach(tab => tab.addEventListener('click', () => setStudyTab(tab.dataset.study)));
+  setStudyTab('isaksen');
 
   // --- Theme toggle ---
   const themeToggle = document.getElementById('themeToggle');
@@ -975,7 +1061,7 @@
   if (savedTheme) setTheme(savedTheme);
 
   // Set today as default date if empty
-  const dateInput = document.getElementById('student-date');
+  const dateInput = document.getElementById('current-date');
   if (!dateInput.value) {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
