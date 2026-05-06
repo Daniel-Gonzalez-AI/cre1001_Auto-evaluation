@@ -4,26 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Auto-évaluation de ma Confiance créative — CRE 1001</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --primary: #1a365d;
-    --accent: #2c5282;
-    --accent-hover: #1a365d;
-    --success: #38a169;
-    --bg: #f7fafc;
-    --card: #ffffff;
-    --border: #e2e8f0;
-    --text: #2d3748;
-    --muted: #718096;
-    --highlight: #fffaf0;
+    --primary: #2d4563;
+    --accent: #4f6f9a;
+    --accent-hover: #3f5d86;
+    --success: #4f9f7a;
+    --bg: #f3f1ea;
+    --card: #fbfaf6;
+    --border: #ddd8cc;
+    --text: #2f3e4e;
+    --muted: #6f7984;
+    --highlight: #fdf5e7;
     --highlight-border: #ed8936;
-    --danger: #e53e3e;
+    --danger: #d94c4c;
     --header-text: #fff;
-    --thead-bg: #f8fafc;
-    --hover-bg: #f8fafc;
-    --progress-bg: #edf2f7;
-    --totals-bg: #f8fafc;
+    --thead-bg: #f3efe6;
+    --hover-bg: #f5f2ea;
+    --progress-bg: #ebe6db;
+    --totals-bg: #f4f0e8;
     --radio-accent: var(--accent);
+    --fun-pink: #d946ef;
   }
 
   /* Dark mode */
@@ -78,7 +82,7 @@
   .page-header { position: relative; }
   * { box-sizing: border-box; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     margin: 0;
@@ -86,6 +90,7 @@
     line-height: 1.6;
   }
   .container { max-width: 1000px; margin: 0 auto; padding: 0 1rem 2rem; }
+  .page-shell { padding-top: 5rem; }
 
   /* Header */
   .page-header {
@@ -108,8 +113,31 @@
     margin-bottom: .75rem;
     border: 1px solid rgba(255,255,255,0.25);
   }
-  .page-header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
+  .page-header h1 {
+    margin: 0;
+    font-size: 1.95rem;
+    font-weight: 700;
+    font-family: "Sora", "Inter", sans-serif;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
   .page-header .subtitle { margin: .5rem 0 0; opacity: .9; font-size: 1.05rem; }
+  .creative-chips {
+    margin-top: .8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .22rem .58rem;
+    font-size: .78rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.15);
+  }
 
   /* Info cards */
   .info-bar {
@@ -168,6 +196,30 @@
   .progress-label { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); margin-bottom: .25rem; }
   .progress-track { height: 8px; background: var(--progress-bg); border-radius: 4px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 4px; transition: width .3s ease; }
+  .floating-progress {
+    position: fixed;
+    top: .75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(980px, calc(100% - 1.5rem));
+    background: color-mix(in oklab, var(--card) 94%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    backdrop-filter: blur(8px);
+    z-index: 50;
+    padding: .6rem .75rem;
+  }
+  .floating-progress .row {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .35rem;
+    font-size: .86rem;
+    color: var(--muted);
+  }
+  .floating-progress .stats strong { color: var(--text); }
 
   /* Table */
   .table-wrap {
@@ -205,10 +257,12 @@
   tbody td:nth-child(5), tbody td:nth-child(6) { text-align: center; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--hover-bg); }
+  tbody tr:hover { background: color-mix(in oklab, var(--accent) 12%, var(--card)); }
+  tbody tr:nth-child(odd):not(.reverse-row) { background: color-mix(in oklab, var(--card) 92%, var(--bg)); }
+  tbody tr:nth-child(even):not(.reverse-row) { background: color-mix(in oklab, var(--bg) 80%, var(--card)); }
 
   .reverse-row { background: var(--highlight) !important; }
-  .reverse-row:hover { background: #fff3d9 !important; }
+  .reverse-row:hover { background: color-mix(in oklab, var(--highlight) 78%, #f9e6bd) !important; }
   .reverse-row td:first-child {
     position: relative;
     padding-left: 2.2rem;
@@ -369,8 +423,74 @@
   .study-content p { margin: .45rem 0; }
   .study-content a { color: var(--accent); text-decoration: underline; }
 
+  .result-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    display: none;
+  }
+  .result-panel h3 { margin: 0 0 .6rem; color: var(--primary); }
+  .result-panel p { margin: .5rem 0; font-size: .93rem; line-height: 1.6; }
+  .result-level { font-weight: 700; color: var(--accent); }
+  .result-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.68);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 120;
+    padding: 1rem;
+  }
+  .result-modal.open { display: flex; }
+  .result-modal-card {
+    width: min(680px, 100%);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.3);
+    padding: 1.1rem 1.2rem;
+    animation: modalIn .2s ease-out;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(8px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .result-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-bottom: .65rem;
+  }
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 20%, var(--card)), color-mix(in oklab, var(--fun-pink) 24%, var(--card)));
+    border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border));
+    color: var(--primary);
+    font-weight: 700;
+    padding: .35rem .65rem;
+    border-radius: 999px;
+    font-size: .85rem;
+  }
+  .result-modal-close {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    border-radius: 8px;
+    padding: .25rem .55rem;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .result-modal p { margin: .55rem 0; font-size: .96rem; line-height: 1.65; }
+
   @media (max-width: 640px) {
-    .page-header h1 { font-size: 1.4rem; }
+    .page-shell { padding-top: 6rem; }
+    .page-header h1 { font-size: 1.5rem; }
     thead th:nth-child(2), thead th:nth-child(3), thead th:nth-child(4),
     thead th:nth-child(5), thead th:nth-child(6) { font-size: .65rem; width: 48px; }
     .global-card { flex-direction: column; text-align: center; gap: .5rem; }
@@ -389,16 +509,30 @@
 </style>
 </head>
 <body>
-<div class="container">
+  <div class="container">
+  <div class="floating-progress" aria-live="polite">
+    <div class="row">
+      <div class="stats">Répondu : <strong id="float-answered">0</strong>/40 · Manquantes : <strong id="float-unanswered">40</strong></div>
+      <button id="btnNextUnanswered" class="btn btn-secondary" type="button">Prochaine non répondue</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-bar-float"></div></div>
+  </div>
+  <div class="page-shell">
 
   <!-- Header -->
   <header class="page-header">
-    <div class="badge">CRE 1001 — Séance 1</div>
+    <div class="badge">✨ CRE 1001 — Séance 1</div>
     <div class="theme-toggle" id="themeToggle" title="Mode clair / Mode sombre">
       <span class="theme-icon" id="themeIcon">🌙</span>
     </div>
     <h1>Auto-évaluation de ma Confiance créative</h1>
     <p class="subtitle">Évaluez votre niveau de confiance créative en cochant la case correspondant à votre niveau d'accord pour chaque énoncé.</p>
+    <div class="creative-chips" aria-label="Ambiance créative">
+      <span class="chip">🎨 Créativité</span>
+      <span class="chip">💡 Idées</span>
+      <span class="chip">🚀 Initiative</span>
+      <span class="chip">🧠 Résolution</span>
+    </div>
   </header>
 
   <!-- Info bar -->
@@ -876,8 +1010,27 @@
   <div class="saved-msg" id="savedMsg">Les réponses ont été enregistrées dans le navigateur.</div>
   <div class="auto-msg" id="autoMsg">Cochez une case pour voir le score se mettre à jour automatiquement.</div>
 
+  <section class="result-panel" id="resultPanel" aria-live="polite">
+    <h3>Interprétation finale des résultats</h3>
+    <p id="result-level" class="result-level">Niveau :</p>
+    <p id="result-text">Soumettez le questionnaire complété pour afficher l'interprétation.</p>
+  </section>
+  <div class="result-modal" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="result-modal-title">
+    <div class="result-modal-card">
+      <div class="result-modal-header">
+        <div>
+          <div class="result-badge">🎉 Résultat final</div>
+          <h3 id="result-modal-title" style="margin:.45rem 0 0;color:var(--primary);">Interprétation de votre confiance créative</h3>
+        </div>
+        <button class="result-modal-close" id="resultModalClose" type="button" aria-label="Fermer le résultat">✕</button>
+      </div>
+      <p id="result-modal-level" class="result-level">Niveau :</p>
+      <p id="result-modal-text">Soumettez le questionnaire complété pour afficher l'interprétation.</p>
+    </div>
+  </div>
+
   <section class="study-panel" aria-label="Sources scientifiques">
-    <h3>Sources scientifiques et résumé formaté</h3>
+    <h3>📚 Sources scientifiques et résumé formaté</h3>
     <div class="study-tabs" role="tablist">
       <button class="study-tab active" role="tab" id="tab-isaksen" aria-selected="true" aria-controls="study-content" data-study="isaksen">Isaksen & Geuens (2007)</button>
       <button class="study-tab" role="tab" id="tab-kelley" aria-selected="false" aria-controls="study-content" data-study="kelley">Kelley & Kelley (2013)</button>
@@ -894,6 +1047,7 @@
     <span style="font-size:.7rem;opacity:.5;margin-top:.35rem;display:block;font-style:italic;">Adaptation faite par Daniel Gonzalez, Cert. en IA, UdeM — 05 mai 2026</span>
   </footer>
 
+</div>
 </div>
 
 <script>
@@ -936,6 +1090,44 @@
     return { sum: sum, answered: answered };
   }
 
+  function getInterpretationFromSectionScore(score) {
+    if (score >= 80) {
+      return {
+        level: "Confiance créative élevée",
+        text: "Vous avez une forte assurance dans votre capacité à innover et à prendre des initiatives. Un score élevé indique un bon niveau de compétences en créativité appliquée et des traits de personnalité qui vous prédisposent à résoudre des problèmes de façon créative."
+      };
+    }
+    if (score >= 50) {
+      return {
+        level: "Confiance créative modérée",
+        text: "Vous avez du potentiel créatif. Certains freins (peur de l'échec, hésitation à agir) peuvent limiter votre expression. Vous pourriez aisément amplifier cette compétence et voir vos opportunités de développement dans certaines dimensions."
+      };
+    }
+    return {
+      level: "Potentiel de développement",
+      text: "Vous ressentez parfois des doutes sur votre capacité à être créatif ou à concrétiser vos idées. Travailler sur l'expérimentation et la résilience peut vous aider. Il y a probablement des croyances ou des peurs qui freinent votre confiance."
+    };
+  }
+
+  function renderFinalInterpretation(s1, s2) {
+    const resultPanel = document.getElementById('resultPanel');
+    const levelEl = document.getElementById('result-level');
+    const textEl = document.getElementById('result-text');
+    const modal = document.getElementById('resultModal');
+    const modalLevel = document.getElementById('result-modal-level');
+    const modalText = document.getElementById('result-modal-text');
+    const averageSectionScore = Math.round((s1 + s2) / 2);
+    const interpretation = getInterpretationFromSectionScore(averageSectionScore);
+    const levelText = `Niveau : ${interpretation.level} (${averageSectionScore}/100)`;
+    levelEl.textContent = levelText;
+    textEl.textContent = interpretation.text;
+    modalLevel.textContent = levelText;
+    modalText.textContent = interpretation.text;
+    resultPanel.style.display = 'block';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
   function updateTotals() {
     const s1 = scoreSection('s1', 20);
     const s2 = scoreSection('s2', 20);
@@ -945,6 +1137,12 @@
     const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
     document.getElementById('progress-bar').style.width = pct + '%';
     document.getElementById('progress-pct').textContent = pct + ' %';
+    const floatBar = document.getElementById('progress-bar-float');
+    if (floatBar) floatBar.style.width = pct + '%';
+    const floatAnswered = document.getElementById('float-answered');
+    const floatUnanswered = document.getElementById('float-unanswered');
+    if (floatAnswered) floatAnswered.textContent = String(answered);
+    if (floatUnanswered) floatUnanswered.textContent = String(TOTAL_QUESTIONS - answered);
 
     // Section totals
     const s1El = document.getElementById('total-s1');
@@ -996,7 +1194,14 @@
 
   // --- Buttons ---
   document.getElementById('btnSave').addEventListener('click', () => {
+    const s1 = scoreSection('s1', 20);
+    const s2 = scoreSection('s2', 20);
+    if (s1.answered !== 20 || s2.answered !== 20) {
+      alert('Complétez les 40 réponses avant de soumettre pour obtenir l’interprétation finale.');
+      return;
+    }
     saveData();
+    renderFinalInterpretation(s1.sum, s2.sum);
     const msg = document.getElementById('savedMsg');
     msg.style.display = 'block';
     setTimeout(() => msg.style.display = 'none', 3500);
@@ -1014,8 +1219,44 @@
     document.getElementById('student-name').value = '';
     document.getElementById('current-date').value = new Date().toISOString().split('T')[0];
     localStorage.removeItem('cre1001_confiance_creative');
+    document.getElementById('resultPanel').style.display = 'none';
+    document.getElementById('resultModal').classList.remove('open');
+    document.body.style.overflow = '';
     updateTotals();
   });
+
+  const resultModal = document.getElementById('resultModal');
+  const resultModalClose = document.getElementById('resultModalClose');
+  function closeResultModal() {
+    resultModal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  resultModalClose.addEventListener('click', closeResultModal);
+  resultModal.addEventListener('click', (event) => {
+    if (event.target === resultModal) closeResultModal();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && resultModal.classList.contains('open')) {
+      closeResultModal();
+    }
+  });
+
+  const btnNextUnanswered = document.getElementById('btnNextUnanswered');
+  if (btnNextUnanswered) {
+    btnNextUnanswered.addEventListener('click', () => {
+      for (const section of ['s1', 's2']) {
+        for (let i = 1; i <= 20; i++) {
+          const radios = Array.from(document.getElementsByName(`${section}_${i}`));
+          const answered = radios.some(rb => rb.checked);
+          if (!answered && radios[0]) {
+            radios[0].closest('tr')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            radios[0].focus();
+            return;
+          }
+        }
+      }
+    });
+  }
 
   // --- Wiring ---
   ['s1', 's2'].forEach(p => {
